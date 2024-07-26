@@ -1,6 +1,6 @@
 # Shutters automation for usage with Somfy Remote
 
-This project is a simple automation to control shutters with a Somfy Remote. It uses a Raspberry Pi Pico and a modified Somfy Remote to control the shutters.
+This project is a simple automation to control shutters with a Somfy Remote. It uses a Raspberry Pi Pico W and a modified Somfy Remote to control and automate the shutters.
 
 ## Hardware
 
@@ -36,8 +36,14 @@ The software is written in MicroPython. The code in the `micropython` directory 
 ### Installation
 
 1. Install MicroPython on the Raspberry Pi Pico W
-2. Add config file
-3. Copy the content of the `micropython` directory to the Raspberry Pi Pico W
+1. Add config file
+1. Copy the content of the `micropython` directory to the Raspberry Pi Pico W
+1. Modify the remote and connect it to the Raspberry Pi Pico W
+1. Restart the Raspberry Pi Pico W to start the automation
+1. Wait a bit for the Raspberry Pi Pico W to connect to the WiFi network and start the web server
+1. Access the web interface at `http://<IP-Address>` to check if the automation is running
+1. (Optional) Connect to your wifi router and set a static IP for the Raspberry Pi Pico W
+1. (Optional) Add the URLs to raise and lower to the app [HTTP Request Shortcuts](https://play.google.com/store/apps/details?id=ch.rmy.android.http_shortcuts&hl=en&gl=US) to control the shutters with your phone
 
 ### Configuration
 
@@ -46,15 +52,31 @@ The configuration file is located at `micropython/config.py`. The file should co
 ```python
 WIFI_SSID = "<SSID>"
 WIFI_PASSWORD = "<PW>"
+TELEGRAM_TOKEN = "<token>" # can be empty string if telegram is not used
+LAT_LOCATION = "<location-lat>"
+LNG_LOCATION = "<location-lng>"
 ```
 
-Replace `<SSID>` with the SSID of your WiFi network and `<PW>` with the password of your WiFi network.
+Replace `<SSID>` with the SSID of your WiFi network and `<PW>` with the password of your WiFi network. If you want to use the Telegram bot, you need to replace `<token>` with the token of your Telegram bot. You can get the token from the [BotFather](https://core.telegram.org/bots#6-botfather). 
+
+Replace `<location-lat>` and `<location-lng>` with the latitude and longitude of your location. You can get the latitude and longitude of your location from for example [Google Maps](https://www.google.com/maps).
+
 
 ### Usage
 
 The Raspberry Pi Pico W will connect to the WiFi network and start a web server. You can access the web server by navigating to the IP address of the Raspberry Pi Pico W in your web browser. The web server will show a simple interface to control the shutters.
 
-The Pico will also start a cron job to close the shutters sunset, opening is not implemented, because you can open the shutters with the remote or your phone.
+
+#### Automatic control
+
+- **Holiday mode**: Shutters will open at sunrise and close at sunset
+- **Summer mode**: Shutters will open at sunset to keep the house cool.
+- **Winter mode**: Shutters will close at sunset to keep the house warm.
+
+The automatic control is based on the current time and the time of the sunset and sunrise. The time of the sunset and sunrise will be fetched from the [sunrise-sunset.org](sunrise-sunset.org) API.
+
+The modes can be switched with the web interface at `http://<IP-Address>`. The current mode will be displayed on the web interface.
+
 
 #### Manual control with the web interface
 

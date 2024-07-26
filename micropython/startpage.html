@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="font-family: Arial, Helvetica, sans-serif;">
 
 <head>
     <meta charset="UTF-8">
@@ -7,37 +7,68 @@
 </head>
 
 <body>
-    <div style="width: 24ch; text-align: center;">
-        <table style="table-layout: fixed; width: 100%; text-align: center;">
-            <tr>
-                <td>
-                    <form action="/raise" method="get">
-                        <input type="submit" value="Auf" style="width: 100%;">
-                    </form>
-                </td>
-                <td>
-                    <form action="/stop" method="get">
-                        <input type="submit" value="Stop" style="width: 100%;">
-                    </form>
-                </td>
-                <td>
-                    <form action="/lower" method="get">
-                        <input type="submit" value="Zu" style="width: 100%;">
-                    </form>
-                </td>
-            </tr>
-        </table>
-        <form action="/toggle" method="get">
-            <input type="submit" value="Toggle" style="width: 97%;">
-        </form>
+    <div style="width: 35ch; text-align: center;">
+        <div
+            style="border-radius: 5px; border-color: darkgray; border-style: solid; border-width: 1px; margin-bottom: 10px; padding-top: 4px; padding-left: 20px; padding-right: 20px;">
+            <a>Rolladen</a>
+            <div style="width: 99%; padding-left: 0.5%;">
+                <table style="table-layout: fixed; width: 100%; text-align: center;">
+                    <tr>
+                        <td>
+                            <form action="/raise" method="get">
+                                <input type="submit" value="Auf" style="width: 100%;">
+                            </form>
+                        </td>
+                        <td>
+                            <form action="/stop" method="get">
+                                <input type="submit" value="Stop" style="width: 100%;">
+                            </form>
+                        </td>
+                        <td>
+                            <form action="/lower" method="get">
+                                <input type="submit" value="Zu" style="width: 100%;">
+                            </form>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <form action="/toggle" method="get">
+                <input type="submit" value="Toggle" style="width: 97%;">
+            </form>
+            <p>Rolladen ist aktuell <b>{raisedStr}</b></p>
+        </div>
+        <div
+            style="border-radius: 5px; border-color: darkgray; border-style: solid; border-width: 1px; margin-bottom: 10px; padding-top: 4px; padding-left: 20px; padding-right: 20px;">
+            <a>Mode</a>
+            <table style="table-layout: fixed; width: 100%; text-align: center;">
+                <tr>
+                    <td>
+                        <form action="/holiday" method="get">
+                            <input type="submit" value="Holiday" style="width: 100%;">
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/summer" method="get">
+                            <input type="submit" value="Summer" style="width: 100%;">
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/winter" method="get">
+                            <input type="submit" value="Winter" style="width: 100%;">
+                        </form>
+                    </td>
+                </tr>
+            </table>
+            <p>Mode ist aktuell <b>{modeStr}</b>.</p>
+        </div>
 
-        <p>Rolladen ist aktuell <b>{raisedStr}</b></p>
-    </div>
-    <div>
-        {sunriseSetStr}
-    </div>
-    <div>
-        <b>Aktuell:</b> {timeString}
+        <div
+            style="border-radius: 5px; border-color: darkgray; border-style: solid; border-width: 1px; margin-bottom: 10px; padding-left: 20px; padding-right: 20px;">
+            <div style="margin-top: 5px;">
+                {sunriseSetStr}
+                <p><b>Aktuell:</b> {timeString}</p>
+            </div>
+        </div>
     </div>
 </body>
 
