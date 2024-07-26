@@ -8,7 +8,7 @@ import gc
 NTP_DELTA = 2208988800
 host = "pool.ntp.org"
 
-class timeSync:
+class TimeSync:
     @staticmethod
     def set_time():
         try:

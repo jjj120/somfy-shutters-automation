@@ -4,9 +4,9 @@ from microdot_asyncio import Microdot, redirect
 
 from wlan import wlan
 from rolladen import Rolladen
-from timeSync import timeSync
-from sun import sun
-from config import WIFI_SSID, WIFI_PASSWORD
+from timeSync import TimeSync
+from sun import Sun
+from config import WIFI_SSID, WIFI_PASSWORD, TELEGRAM_TOKEN
 
 
 #init wlan instance and connect to wlan
@@ -14,10 +14,10 @@ wlan = wlan(WIFI_SSID, WIFI_PASSWORD)
 wlan.connect()
 
 #sync time with ntp server
-timeSync.set_time()
+TimeSync.set_time()
 
 #init sun instance and get data from api
-sun = sun()
+sun = Sun(TELEGRAM_TOKEN)
 
 #inti rolladen obj
 rolladen = Rolladen()
@@ -25,17 +25,18 @@ rolladen = Rolladen()
 #print current time
 print(time.gmtime())
 
+with open("startpage.html", "r") as f:
+    startPage = f.read()
 
 #---------------------------------------------------------------------------------------
-sunsetTask = 0
-sunriseTask = 0
-
+sunsetTask: uasyncio.Task = uasyncio.create_task(schedule(lambda: print("initial sunset"), hrs=18, mins=0))
+sunriseTask: uasyncio.Task = uasyncio.create_task(schedule(lambda: print("initial sunrise"), hrs=6, mins=0))
 
 #define keywordless functions for use with schedule
 
 async def syncTime():
     #run every 2 hours
-    timeSync.set_time()
+    TimeSync.set_time()
 
 async def sunsetFunction():
     #run every day at sunset
@@ -56,7 +57,7 @@ async def refreshSun():
     #renew sunset and sunrise task time
     
     #cancel prev sunset task:
-    try: sunsetTask.cancel()
+    try: sunsetTask.cancel() # type: ignore
     except Exception as e: print(e)
     
     #create new sunset task
@@ -66,7 +67,7 @@ async def refreshSun():
     
     
     #cancel prev sunrise task:
-    try: sunriseTask.cancel()
+    try: sunriseTask.cancel() # type: ignore
     except Exception as e: print(e)
     
     #create new sunrise task
@@ -167,12 +168,12 @@ def start_server():
 #start async tasks
 print("starting async tasks")
 
-async def main():
+def main():
     global refreshSunTask, timeSyncTask
     refreshSunTask = uasyncio.create_task(schedule(refreshSun, hrs=2))
     timeSyncTask = uasyncio.create_task(schedule(syncTime, hrs=range(0, 24, 2)))
     
-    await start_server()
+    start_server()
 
 uasyncio.run(main())
 
