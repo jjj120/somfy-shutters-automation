@@ -242,7 +242,6 @@ async def callSunsetTask(request):
 async def enableHolidayMode(request):
     global mode
     mode = HOLIDAY_MODE
-    print("Set mode to " + mode_to_str(mode))
     return redirect("/")
 
 
@@ -250,7 +249,6 @@ async def enableHolidayMode(request):
 async def enableSummerMode(request):
     global mode
     mode = SUMMER_MODE
-    print("Set mode to " + mode_to_str(mode))
     return redirect("/")
 
 
@@ -258,7 +256,6 @@ async def enableSummerMode(request):
 async def enableWinterMode(request):
     global mode
     mode = WINTER_MODE
-    print("Set mode to " + mode_to_str(mode))
     return redirect("/")
 
 
