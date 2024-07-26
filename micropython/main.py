@@ -36,16 +36,50 @@ sunriseTask: uasyncio.Task = uasyncio.create_task(
     schedule(lambda: print("initial sunrise"), hrs=6, mins=0)
 )
 
+
+# ---------------------------------------------------------------------------------------
+
+
+def set_mode(new_mode):
+    global mode
+    mode = new_mode
+    with open("mode.txt", "w") as f:
+        f.write(str(new_mode))
+
+
+def mode_to_str(mode):
+    if mode == WINTER_MODE:
+        return "Winter"
+    elif mode == SUMMER_MODE:
+        return "Summer"
+    elif mode == HOLIDAY_MODE:
+        return "Holiday"
+    else:
+        return "Unknown"
+
+
+# ---------------------------------------------------------------------------------------
+
 # define mode "enum"
 WINTER_MODE = 0
 SUMMER_MODE = 1
 HOLIDAY_MODE = 2
 
-# determine default mode based on month
-if time.gmtime()[1] in [6, 7, 8]:  # June, July, August
-    mode = SUMMER_MODE
-else:
-    mode = WINTER_MODE
+with open("mode.txt", "r") as f:
+    mode = f.read()
+    if mode != "":
+        mode = int(mode)
+    else:
+        mode = WINTER_MODE
+
+# determine mode based on month
+if mode != HOLIDAY_MODE:
+    if time.gmtime()[1] in [6, 7, 8]:  # June, July, August
+        mode = SUMMER_MODE
+    else:
+        mode = WINTER_MODE
+
+print("loaded Mode:", mode_to_str(mode))
 
 
 # define keywordless functions for use with schedule
@@ -240,37 +274,20 @@ async def callSunsetTask(request):
 # Mode selection
 @app.route("/holiday")
 async def enableHolidayMode(request):
-    global mode
-    mode = HOLIDAY_MODE
+    set_mode(HOLIDAY_MODE)
     return redirect("/")
 
 
 @app.route("/summer")
 async def enableSummerMode(request):
-    global mode
-    mode = SUMMER_MODE
+    set_mode(SUMMER_MODE)
     return redirect("/")
 
 
 @app.route("/winter")
 async def enableWinterMode(request):
-    global mode
-    mode = WINTER_MODE
+    set_mode(WINTER_MODE)
     return redirect("/")
-
-
-# ---------------------------------------------------------------------------------------
-
-
-def mode_to_str(mode):
-    if mode == WINTER_MODE:
-        return "Winter"
-    elif mode == SUMMER_MODE:
-        return "Summer"
-    elif mode == HOLIDAY_MODE:
-        return "Holiday"
-    else:
-        return "Unknown"
 
 
 # ---------------------------------------------------------------------------------------
@@ -280,7 +297,8 @@ def start_server():
     print("Starting microdot app")
     try:
         app.run(port=80)
-    except:
+    except Exception as e:
+        print(e)
         app.shutdown()
 
 
