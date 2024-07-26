@@ -1,12 +1,21 @@
 import time, machine, uasyncio
 from sched.sched import schedule
-from microdot_asyncio import Microdot, redirect
+from microdot_asyncio import Microdot, redirect, Request
 
 from wlan import wlan
 from rolladen import Rolladen
 from timeSync import TimeSync
 from sun import Sun
-from config import WIFI_SSID, WIFI_PASSWORD, LAT_LOCATION, LNG_LOCATION, TELEGRAM_TOKEN
+from config import (
+    WIFI_SSID,
+    WIFI_PASSWORD,
+    TELEGRAM_TOKEN,
+    LAT_LOCATION,
+    LNG_LOCATION,
+    LOWER_TIME,
+    RAISE_TIME,
+    RAISE_OFFSET,
+)
 
 
 # init wlan instance and connect to wlan
@@ -20,7 +29,7 @@ TimeSync.set_time()
 sun = Sun(LAT_LOCATION, LNG_LOCATION, TELEGRAM_TOKEN)
 
 # inti rolladen obj
-rolladen = Rolladen()
+rolladen = Rolladen(LOWER_TIME, RAISE_TIME, RAISE_OFFSET)
 
 # print current time
 print(time.gmtime())
@@ -267,6 +276,33 @@ async def callSunriseTask(request):
 @app.route("/sunset")
 async def callSunsetTask(request):
     uasyncio.create_task(sunsetCallback())
+    return redirect("/")
+
+
+@app.route("/syncTime")
+async def callSyncTimeTask(request):
+    uasyncio.create_task(syncTime())
+    return redirect("/")
+
+
+@app.route("/set_to_percent", methods=["POST"])
+async def set_to_percent(request):
+    try:
+        percent = request.form["percent"]
+    except KeyError:
+        print("No percent given")
+        return "No percent given", 400
+
+    if percent == "" or percent is None:
+        print("No percent given")
+        return "No percent given", 400
+
+    percent = float(percent)
+    if percent < 0 or percent > 100:
+        print("Percentage must be between 0 and 100")
+        return "Percentage must be between 0 and 100", 400
+
+    uasyncio.create_task(rolladen.set_to(float(percent)))
     return redirect("/")
 
 

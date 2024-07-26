@@ -55,11 +55,16 @@ WIFI_PASSWORD = "<PW>"
 TELEGRAM_TOKEN = "<token>" # can be empty string if telegram is not used
 LAT_LOCATION = "<location-lat>"
 LNG_LOCATION = "<location-lng>"
+LOWER_TIME = <lower-time-sec>
+RAISE_TIME = <raise-time-sec>
+RAISE_OFFSET = <raise-offset-time-sec>
 ```
 
 Replace `<SSID>` with the SSID of your WiFi network and `<PW>` with the password of your WiFi network. If you want to use the Telegram bot, you need to replace `<token>` with the token of your Telegram bot. You can get the token from the [BotFather](https://core.telegram.org/bots#6-botfather). 
 
 Replace `<location-lat>` and `<location-lng>` with the latitude and longitude of your location. You can get the latitude and longitude of your location from for example [Google Maps](https://www.google.com/maps).
+
+Replace `<lower-time-sec>` with the time in seconds the shutters need to close. Replace `<raise-time-sec>` with the time in seconds the shutters need to open, from the position, where the lower part starts rising. Replace `<raise-offset-time-sec>` with the time in seconds the shutters need to open fully closed to  the position, where the lower part starts rising.
 
 
 ### Usage
@@ -80,7 +85,11 @@ The modes can be switched with the web interface at `http://<IP-Address>`. The c
 
 #### Manual control with the web interface
 
-The web interface will show a simple interface to control the shutters. You can open, stop and close the shutters with the buttons. It also shows the current state of the shutters, the current time and the time of the sunset and sunrise.
+The web interface will show a simple interface to control the shutters. You can open, stop and close the shutters with the buttons or set the shutters to some close percentage. The percentage is the percentage of the shutters that are closed. They are only estimates from the rise and lower times. It does not get set immediately, but the shutters will move to the set percentage after some time (depending on the rise and lower times). 
+
+It also shows the current state of the shutters, the current time and the time of the sunset and sunrise.
+
+You can also set the mode to holiday, summer or winter with the buttons on the web interface.
 
 #### Manual control with your phone
 

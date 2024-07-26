@@ -35,6 +35,10 @@
             <form action="/toggle" method="get">
                 <input type="submit" value="Toggle" style="width: 97%;">
             </form>
+            <form action="/set_to_percent" method="post" style="margin-top: 4px;">
+                <input type="number" name="percent" placeholder="cover percent" min="0" max="100" style="width: 62%;">
+                <input type="submit" value="Set" style="width: 30%;">
+            </form>
             <p>Rolladen ist aktuell <b>{raisedStr}</b></p>
         </div>
         <div
