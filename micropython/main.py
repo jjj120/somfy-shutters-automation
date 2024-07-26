@@ -108,49 +108,9 @@ async def mainPage(request):
             <button style="width: 100%">&Ouml;ffnen</button>
         </a>
         """
-        
-    htmlString = """<!DOCTYPE html>
-    <html>
-        <head>
-            <meta charset="UTF-8">
-            <title>Rolladen</title>
-        </head>
-        <body>
-            <div style="width: 24ch; text-align: center;">
-                <table style="table-layout: fixed; width: 100%; text-align: center;">
-                    <tr>
-                        <td>
-                            <form action="/raise" method="get">
-                                <input type="submit" value="Auf" style="width: 100%;">
-                            </form>
-                        </td>
-                        <td>
-                            <form action="/stop" method="get">
-                                <input type="submit" value="Stop" style="width: 100%;">
-                            </form>
-                        </td>
-                        <td>
-                            <form action="/lower" method="get">
-                                <input type="submit" value="Zu" style="width: 100%;">
-                            </form>
-                        </td>
-                    </tr>
-                </table>
-                <form action="/toggle" method="get">
-                    <input type="submit" value="Toggle" style="width: 97%;">
-                </form>
-                
-                <p>Rolladen ist aktuell <b>{raisedStr}</b></p>
-            </div>
-            <div>
-                {sunriseSetStr}
-            </div>
-            <div>
-                <b>Aktuell:</b> {timeString}
-            </div>
-        </body>
-    </html>
-    """.format(raisedStr=raisedStr, sunriseSetStr=sunriseSetStr, timeString=timeString)
+    
+
+    htmlString = startPage.format(raisedStr=raisedStr, sunriseSetStr=sunriseSetStr, timeString=timeString)
     
     return htmlString, {'Content-Type': 'text/html'}
 
