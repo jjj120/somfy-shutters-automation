@@ -306,6 +306,12 @@ async def set_to_percent(request):
     return redirect("/")
 
 
+@app.route("/status")
+async def status(request):
+    status = rolladen.raised
+    return {"status": status}
+
+
 # ---------------------------------------------------------------------------------------
 # Mode selection
 @app.route("/holiday")
