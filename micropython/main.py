@@ -48,6 +48,17 @@ sunriseTask: uasyncio.Task = uasyncio.create_task(
 
 # ---------------------------------------------------------------------------------------
 
+# MODES:
+# winter mode: rolladen down at sunset
+# summer mode: rolladen up at sunset
+# holiday mode: rolladen down at sunset, up at sunrise
+# simple mode: disable all automatic functions --> used for automating with external systems
+
+WINTER_MODE = 0
+SUMMER_MODE = 1
+HOLIDAY_MODE = 2
+SIMPLE_MODE = 3
+
 
 def set_mode(new_mode):
     global mode
@@ -63,26 +74,23 @@ def mode_to_str(mode):
         return "Summer"
     elif mode == HOLIDAY_MODE:
         return "Holiday"
+    elif mode == SIMPLE_MODE:
+        return "Simple"
     else:
         return "Unknown"
 
 
 # ---------------------------------------------------------------------------------------
 
-# define mode "enum"
-WINTER_MODE = 0
-SUMMER_MODE = 1
-HOLIDAY_MODE = 2
-
 with open("mode.txt", "r") as f:
     mode = f.read()
     if mode != "":
         mode = int(mode)
     else:
-        mode = WINTER_MODE
+        mode = SIMPLE_MODE
 
 # determine mode based on month
-if mode != HOLIDAY_MODE:
+if mode != HOLIDAY_MODE and mode != SIMPLE_MODE:
     if time.gmtime()[1] in [6, 7, 8]:  # June, July, August
         mode = SUMMER_MODE
     else:
@@ -105,9 +113,11 @@ async def sunsetCallback():
     elif mode == SUMMER_MODE:
         ## in summer mode, the rolladen should be raised at sunset to keep the house cool
         uasyncio.create_task(rolladen.raise_())
-    else:  # winter mode
+    elif mode == WINTER_MODE:
         # in winter mode, the rolladen should be lowered at sunset to keep the house warm
         uasyncio.create_task(rolladen.lower_())
+    else:  # simple mode: do nothing
+        pass
 
 
 async def sunriseCallback():
@@ -115,8 +125,8 @@ async def sunriseCallback():
     if mode == HOLIDAY_MODE:
         # in holiday mode, the rolladen should be raised at sunrise
         uasyncio.create_task(rolladen.raise_())
-
-    await uasyncio.sleep(0.5)
+    else:  # other modes: do nothing
+        pass
 
 
 async def refreshSun():
@@ -329,6 +339,12 @@ async def enableSummerMode(request):
 @app.route("/winter")
 async def enableWinterMode(request):
     set_mode(WINTER_MODE)
+    return redirect("/")
+
+
+@app.route("/simple")
+async def enableSimpleMode(request):
+    set_mode(SIMPLE_MODE)
     return redirect("/")
 
 
